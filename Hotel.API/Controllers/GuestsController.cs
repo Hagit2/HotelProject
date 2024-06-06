@@ -1,4 +1,8 @@
-﻿using Hotel.Core.Entities;
+﻿using AutoMapper;
+using Hotel.API.Models;
+using Hotel.Core;
+using Hotel.Core.DTOs;
+using Hotel.Core.Entities;
 using Hotel.Core.Services;
 
 
@@ -13,38 +17,47 @@ namespace Hotel.API.Controllers
     public class GuestsController : ControllerBase
     {
         private readonly IGuestService _guestService;
-        
-        public GuestsController(IGuestService guestService)
+        private readonly IMapper _mapper;
+
+        public GuestsController(IGuestService guestService,IMapper mapper)
         {
             _guestService = guestService;
+            _mapper = mapper;
         }
     
         // GET: api/<GuestsController>
         [HttpGet]
-        public IEnumerable<Guest> Get()
+        public ActionResult Get()
         {
-            return _guestService.GetAll();
+            var list = _guestService.GetAll();
+            var listDto = _mapper.Map<IEnumerable<GuestDto>>(list);
+            return Ok(listDto);
+           
         }
 
         // GET api/<GuestsController>/5
         [HttpGet("{id}")]
-        public Guest Get(int id)
+        public ActionResult Get(int id)
         {
-            return _guestService.Get(id);
+            var guest= _guestService.Get(id);
+            var guestdto=_mapper.Map<GuestDto>(guest);
+            return Ok(guestdto);
         }
 
         // POST api/<GuestsController>
         [HttpPost]
-        public Guest Post([FromBody] Guest value)
+        public Guest Post([FromBody] GuestPostModel value)
         {
-            return _guestService.Add(value);    
+            var guestToAdd = new Guest { Count = value.Count, Start = value.Start, End = value.End,RoomId=value.RoomId };
+            return _guestService.Add(guestToAdd);    
         }
 
         // PUT api/<GuestsController>/5
         [HttpPut("{id}")]
-        public Guest Put(int id, [FromBody] Guest value)
+        public Guest Put(int id, [FromBody] GuestPostModel value)
         {
-           return  _guestService.Update(value, id);    
+            var guestToAdd = new Guest { Count = value.Count, Start = value.Start, End = value.End, RoomId = value.RoomId };
+            return _guestService.Update(guestToAdd, id);    
         }
 
         // DELETE api/<GuestsController>/5

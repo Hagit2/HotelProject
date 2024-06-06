@@ -1,4 +1,8 @@
-﻿using Hotel.Core.Entities;
+﻿using AutoMapper;
+using Hotel.API.Models;
+using Hotel.Core;
+using Hotel.Core.DTOs;
+using Hotel.Core.Entities;
 using Hotel.Core.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -11,37 +15,47 @@ namespace Hotel.API.Controllers
     [ApiController]
     public class RoomsController : ControllerBase
     {
-        private readonly IRoomService _roomService;  
-        public RoomsController (IRoomService roomService)
+        private readonly IRoomService _roomService;
+        private readonly IMapper _mapper;
+        public RoomsController (IRoomService roomService,IMapper mapper)
         {
           _roomService = roomService;
+            _mapper = mapper; 
         }
         // GET: api/<RoomsController>
         [HttpGet]
-        public IEnumerable<Room> Get()
+        public ActionResult Get()
         {
-            return _roomService.GetAll();
+            var list = _roomService.GetAll();
+            var listDto =_mapper.Map<IEnumerable<RoomDto>>(list);
+           return Ok(listDto);
+            
         }
 
         // GET api/<RoomsController>/5
         [HttpGet("{id}")]
-        public Room Get(int id)
+        public ActionResult Get(int id)
         {
-            return _roomService.Get(id);
+            var room= _roomService.Get(id);
+            var roomdto=_mapper.Map<RoomDto>(room);
+            return Ok(roomdto);
         }
 
         // POST api/<RoomsController>
         [HttpPost]
-        public Room Post([FromBody] Room value)
+        public Room Post([FromBody] RoomPostModel value)
         {
-            return _roomService.Add(value);
+            var roomToAdd = new Room { Bades=value.Bades,Stastus=value.Stastus,EmployeeId=value.EmployeeId };
+            return _roomService.Add(roomToAdd);
         }
 
         // PUT api/<RoomsController>/5
         [HttpPut("{id}")]
-        public Room Put(int id, [FromBody] Room value)
+        public Room Put(int id, [FromBody] RoomPostModel value)
         {
-            return _roomService.Update(value,id);   
+            var roomToAdd = new Room { Bades = value.Bades, Stastus = value.Stastus, EmployeeId = value.EmployeeId };
+
+            return _roomService.Update(roomToAdd, id);   
         }
 
         // DELETE api/<RoomsController>/5

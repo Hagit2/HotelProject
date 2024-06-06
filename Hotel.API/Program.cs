@@ -1,3 +1,4 @@
+using Hotel.Core;
 using Hotel.Core.Repositories;
 using Hotel.Core.Services;
 using Hotel.Data;
@@ -22,6 +23,9 @@ builder.Services.AddDbContext<DataContexst>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IGuestService, GuestService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
+
+builder.Services.AddSingleton<Mapping>();
+builder.Services.AddAutoMapper(typeof(Mappingprofile));
 
 var app = builder.Build();
 

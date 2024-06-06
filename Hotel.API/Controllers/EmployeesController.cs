@@ -1,4 +1,8 @@
-﻿using Hotel.Core.Entities;
+﻿using AutoMapper;
+using Hotel.API.Models;
+using Hotel.Core;
+using Hotel.Core.DTOs;
+using Hotel.Core.Entities;
 using Hotel.Core.Services;
 
 
@@ -12,38 +16,47 @@ namespace Hotel.API.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
-        private readonly IEmployeeService _employeeService; 
-        public EmployeesController(IEmployeeService employeeService)
+        private readonly IEmployeeService _employeeService;
+        private readonly IMapper _mapper;
+        public EmployeesController(IEmployeeService employeeService,IMapper mapper)
         {
             _employeeService = employeeService;
+            _mapper = mapper;   
         }
     
         // GET: api/<UsersController>
         [HttpGet]
-        public IEnumerable<Employee> Get()
+        public ActionResult Get()
         {
-            return _employeeService.GetAll();
+           var list= _employeeService.GetAll();
+           var listDto = _mapper.Map<IEnumerable<EmployeeDto>>(list);
+            
+            return Ok(listDto);
         }
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public Employee Get(int id)
+        public ActionResult Get(int id)
         {
-            return _employeeService.Get(id);
+            var employee=_employeeService.Get(id);
+            var Employeedto = _mapper.Map<EmployeeDto>(employee);
+            return Ok(Employeedto);
         }
 
         // POST api/<UsersController>
         [HttpPost]
-        public Employee Post([FromBody] Employee value)
+        public Employee Post([FromBody] EmployeePostModel value)
         {
-            return _employeeService.Add(value); 
+            var employeeToAdd = new Employee {Name=value.Name,Age=value.Age,Hours=value.Hours };  
+            return _employeeService.Add(employeeToAdd); 
         }
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public Employee Put(int id, [FromBody] Employee value)
+        public Employee Put(int id, [FromBody] EmployeePostModel value)
         {
-            return _employeeService.Update(value,id);
+            var employeeToAdd = new Employee { Name = value.Name, Age = value.Age, Hours = value.Hours };
+            return _employeeService.Update(employeeToAdd, id);
         }
 
         // DELETE api/<UsersController>/5

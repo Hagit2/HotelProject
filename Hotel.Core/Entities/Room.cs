@@ -18,8 +18,8 @@ namespace Hotel.Core.Entities
 
       //  public DateTime End { get; set; }
 
-        public Guest Guest { get; set; }
-        public int GuestId { get; set; }    
+        public List <Guest> Guests { get; set; }
+      //  public int GuestId { get; set; }//בגלל שאני רוצה להציג את זה בצד של האורחים    
     
         public Employee Employee { get; set; }
         public int EmployeeId { get; set; } 

@@ -35,7 +35,7 @@ namespace Hotel.Data.Repositories
 
         public List<Room> GetAllRooms()
         {
-          return  _context.Rooms.Include(r => r.Guest).ToList();//
+          return  _context.Rooms.Include(r => r.Guests).ToList();//
         }
 
         public Room GetRoomById(int id)
